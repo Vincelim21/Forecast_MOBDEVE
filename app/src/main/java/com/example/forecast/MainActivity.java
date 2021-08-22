@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //Test Commit
+        //Push Carlo
 
         //load days data
         loadDaysData();
