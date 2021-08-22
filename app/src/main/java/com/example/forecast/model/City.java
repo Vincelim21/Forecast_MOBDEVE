@@ -17,10 +17,6 @@ public class City {
         this.curTemp = curTemp;
     }
 
-    public void changeText1(String text) {
-        cityName = text;
-    }
-
     public String getCityName() { return cityName; }
 
     public int getConditionIconId() {

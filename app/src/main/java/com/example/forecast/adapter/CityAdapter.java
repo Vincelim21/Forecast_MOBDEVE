@@ -12,11 +12,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.forecast.R;
 import com.example.forecast.model.City;
+import com.example.forecast.model.CityList;
 
 import java.util.ArrayList;
 
 public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder> {
-    private ArrayList<City> cityList;
+    private static final int TYPE = 1;
+    private ArrayList<CityList> cityList;
     private OnItemClickListener mlistener;
 
     public interface  OnItemClickListener {
@@ -29,16 +31,14 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
     }
 
     public static class CityViewHolder extends RecyclerView.ViewHolder{
-        public TextView cityName, curTemp;
-        public ImageView conditionIcon;
+        public TextView cityName, countryCode;
         public ImageButton preferredButton;
 
 
         public CityViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             cityName = itemView.findViewById(R.id.city_name);
-            conditionIcon = itemView.findViewById(R.id.city_condition_icon);
-            curTemp = itemView.findViewById(R.id.city_degree);
+            countryCode = itemView.findViewById(R.id.country_code);
             preferredButton = itemView.findViewById(R.id.city_is_preferred);
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -67,25 +67,28 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
         }
     }
 
-    public CityAdapter(ArrayList<City> cityList) {
+    public CityAdapter(ArrayList<CityList> cityList) {
         this.cityList = cityList;
     }
 
     @NonNull
     @Override
     public CityViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.city_card, parent, false);
-        CityViewHolder cvh = new CityViewHolder(v, mlistener);
-        return cvh;
+        switch(viewType) {
+            case TYPE:
+            default:
+                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.city_card, parent, false);
+                CityViewHolder cvh = new CityViewHolder(v, mlistener);
+                return cvh;
+        }
     }
 
     @Override
     public void onBindViewHolder(@NonNull CityViewHolder holder, int position) {
-        City currentCity = cityList.get(position);
+        CityList currentCity = cityList.get(position);
 
-        holder.cityName.setText(currentCity.getCityName());
-        holder.conditionIcon.setImageResource(currentCity.getConditionIconId());
-        holder.curTemp.setText(currentCity.getCurTemp() + "\u00B0");
+        holder.cityName.setText(currentCity.getCity());
+        holder.countryCode.setText(currentCity.getCountry());
     }
 
     @Override

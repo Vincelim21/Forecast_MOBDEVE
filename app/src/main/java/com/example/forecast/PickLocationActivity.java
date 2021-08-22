@@ -9,22 +9,32 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.forecast.adapter.CityAdapter;
 import com.example.forecast.model.City;
+import com.example.forecast.model.CityList;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PickLocationActivity extends AppCompatActivity {
 
     private RecyclerView cityRecyclerView;
     private CityAdapter cityAdapter;
     private RecyclerView.LayoutManager cityLayoutManager;
-    private ArrayList<City> cities = new ArrayList<>();
+    private ArrayList<CityList> cities = new ArrayList<>();
     private SearchView searchBar;
 
     @Override
@@ -41,18 +51,63 @@ public class PickLocationActivity extends AppCompatActivity {
     }
 
     public void loadCityData() {
-        cities.add(new City("Manila", R.drawable.clear, "32", "sunny"));
-        cities.add(new City("Cebu", R.drawable.light_rain, "29", "light rains"));
-        cities.add(new City("London", R.drawable.rain, "22", "rainy"));
-        cities.add(new City("Brighton", R.drawable.partly_cloudy, "19", "partly cloudy"));
-        cities.add(new City("Tokyo", R.drawable.overcast, "22", "cloudy"));
-        cities.add(new City("Sapporo", R.drawable.mostly_cloudy, "20", "mostly cloudy"));
-        cities.add(new City("Ontario", R.drawable.heavy_rain, "24", "heavy rains"));
-        cities.add(new City("Vancouver", R.drawable.rain, "19", "rainy"));
+        try {
+
+            String jsonDataString = readJSONDataFromFile();
+            JSONArray jsonArray = new JSONArray(jsonDataString);
+
+            for (int i = 0; i < jsonArray.length(); ++i) {
+
+                JSONObject itemObj = jsonArray.getJSONObject(i);
+
+                int id = itemObj.getInt("id");
+                String name = itemObj.getString("name");
+                String country = itemObj.getString("country");
+
+                CityList City = new CityList(name, country);
+                cities.add(City);
+            }
+
+        } catch (JSONException | IOException e) {
+            Log.d(null, "loadCityData: ", e);
+        }
     }
 
+    private String readJSONDataFromFile() throws IOException{
+
+        InputStream inputStream = null;
+        StringBuilder builder = new StringBuilder();
+
+        try {
+
+            String jsonString = null;
+            inputStream = getResources().openRawResource(R.raw.citylist);
+            BufferedReader bufferedReader = new BufferedReader(
+                    new InputStreamReader(inputStream, "UTF-8"));
+
+            while ((jsonString = bufferedReader.readLine()) != null) {
+                builder.append(jsonString);
+            }
+
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        }
+        return new String(builder);
+    }
+//        cities.add(new City("Manila", R.drawable.clear, "32", "sunny"));
+//        cities.add(new City("Cebu", R.drawable.light_rain, "29", "light rains"));
+//        cities.add(new City("London", R.drawable.rain, "22", "rainy"));
+//        cities.add(new City("Brighton", R.drawable.partly_cloudy, "19", "partly cloudy"));
+//        cities.add(new City("Tokyo", R.drawable.overcast, "22", "cloudy"));
+//        cities.add(new City("Sapporo", R.drawable.mostly_cloudy, "20", "mostly cloudy"));
+//        cities.add(new City("Ontario", R.drawable.heavy_rain, "24", "heavy rains"));
+//        cities.add(new City("Vancouver", R.drawable.rain, "19", "rainy"));
+
+
     public void setAsCurrentCity(int position) {
-        String cityName = cities.get(position).getCityName();
+        String cityName = cities.get(position).getCity();
 
         Toast.makeText(this, "Now using "+ cityName + " as current city.",
                 Toast.LENGTH_LONG).show();
