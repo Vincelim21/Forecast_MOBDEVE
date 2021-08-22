@@ -42,8 +42,6 @@ public class PickLocationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pick_location);
 
-        //load cities data
-        loadCityData();
 
         //setup city recyclerview
         setUpCityRecyclerView();
@@ -60,11 +58,10 @@ public class PickLocationActivity extends AppCompatActivity {
 
                 JSONObject itemObj = jsonArray.getJSONObject(i);
 
-                int id = itemObj.getInt("id");
                 String name = itemObj.getString("name");
-                String country = itemObj.getString("country");
+                String province = itemObj.getString("province");
 
-                CityList City = new CityList(name, country);
+                CityList City = new CityList(name, province);
                 cities.add(City);
             }
 
@@ -130,6 +127,9 @@ public class PickLocationActivity extends AppCompatActivity {
 
          cityRecyclerView.setLayoutManager(cityLayoutManager);
          cityRecyclerView.setAdapter(cityAdapter);
+
+         //load cities data
+         loadCityData();
 
          //cityRecyclerView.addItemDecoration(new SpacesCityDecoration(15));
 

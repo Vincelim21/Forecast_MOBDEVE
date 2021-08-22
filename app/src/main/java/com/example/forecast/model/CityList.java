@@ -1,18 +1,20 @@
 package com.example.forecast.model;
 
 public class CityList {
-    private String city, country;
+    private String city;
+    private String cityCountry;
 
-    public CityList(String city, String country){
+    public CityList(String city, String province){
         this.city = city;
-        this.country = country;
+        this.cityCountry = city + ", " + province;
     }
 
     public String getCity() {
         return city;
     }
 
-    public String getCountry() {
-        return country;
+    public String getCityCountry() {
+        return cityCountry;
     }
+
 }

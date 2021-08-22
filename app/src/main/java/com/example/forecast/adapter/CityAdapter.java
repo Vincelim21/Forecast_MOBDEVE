@@ -31,14 +31,13 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
     }
 
     public static class CityViewHolder extends RecyclerView.ViewHolder{
-        public TextView cityName, countryCode;
+        public TextView cityCountry;
         public ImageButton preferredButton;
 
 
         public CityViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
-            cityName = itemView.findViewById(R.id.city_name);
-            countryCode = itemView.findViewById(R.id.country_code);
+            cityCountry = itemView.findViewById(R.id.city_name);
             preferredButton = itemView.findViewById(R.id.city_is_preferred);
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -87,8 +86,7 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
     public void onBindViewHolder(@NonNull CityViewHolder holder, int position) {
         CityList currentCity = cityList.get(position);
 
-        holder.cityName.setText(currentCity.getCity());
-        holder.countryCode.setText(currentCity.getCountry());
+        holder.cityCountry.setText(currentCity.getCityCountry());
     }
 
     @Override
