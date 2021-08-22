@@ -1,0 +1,132 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/popup_bg"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/day_background"
+        android:layout_width="360dp"
+        android:layout_height="450dp"
+        android:background="@drawable/current_weather_container">
+
+
+        <TextView
+            android:id="@+id/day_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:fontFamily="@font/raleway_medium"
+            android:text="Wednesday"
+            android:textSize="28dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!--<com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/day_condition_animation"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/day_name"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/snow_weather" />-->
+
+        <ImageView
+            android:id="@+id/condition_icon"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/day_name"
+            app:srcCompat="@drawable/clear" />
+
+        <TextView
+            android:id="@+id/weather_condition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/raleway"
+            android:text="clear"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/condition_icon" />
+
+
+        <TextView
+            android:id="@+id/degree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/raleway"
+            android:text="4&#xb0;"
+            android:textSize="36sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/weather_condition" />
+
+        <ImageView
+            android:id="@+id/day_up_arrow"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:layout_constraintBottom_toBottomOf="@id/degree"
+            app:layout_constraintEnd_toStartOf="@id/degree"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/weather_condition"
+            app:srcCompat="@drawable/ic_keyboard_arrow_up_24" />
+
+        <ImageView
+            android:id="@+id/day_down_arrow"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:layout_constraintBottom_toBottomOf="@id/degree"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/degree"
+            app:layout_constraintTop_toTopOf="@id/weather_condition"
+            app:srcCompat="@drawable/ic_keyboard_arrow_down_24" />
+
+        <TextView
+            android:id="@+id/day_min_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/raleway"
+            android:text="-3&#xb0;"
+            android:textSize="18dp"
+            app:layout_constraintEnd_toEndOf="@id/day_down_arrow"
+            app:layout_constraintStart_toStartOf="@id/day_down_arrow"
+            app:layout_constraintTop_toBottomOf="@id/day_down_arrow" />
+
+        <TextView
+            android:id="@+id/day_max_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/raleway"
+            android:text="7&#xb0;"
+            android:textSize="18dp"
+            app:layout_constraintEnd_toEndOf="@id/day_up_arrow"
+            app:layout_constraintStart_toStartOf="@id/day_up_arrow"
+            app:layout_constraintTop_toBottomOf="@id/day_up_arrow" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/hour_container"
+            android:layout_width="300dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/hour_container_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>
