@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import com.example.forecast.adapter.CityAdapter;
 import com.example.forecast.model.City;
 import com.example.forecast.model.CityList;
+import com.example.forecast.model.Keys;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -136,6 +138,8 @@ public class PickLocationActivity extends AppCompatActivity {
          cityAdapter.setOnItemCLickListener(new CityAdapter.OnItemClickListener() {
              @Override
              public void onItemClick(int position) {
+
+                 saveCity(position);
                  setAsCurrentCity(position);
              }
 
@@ -146,5 +150,12 @@ public class PickLocationActivity extends AppCompatActivity {
          });
      }
 
+    public void saveCity(int position){
+        SharedPreferences sp = getSharedPreferences(Keys.KEY_SP.name(), MODE_PRIVATE);
+        SharedPreferences.Editor spEditor = sp.edit();
 
+        spEditor.putString(Keys.KEY_SELECTED_CITY.name(), cities.get(position).getCity());
+
+        spEditor.apply();
+    }
 }

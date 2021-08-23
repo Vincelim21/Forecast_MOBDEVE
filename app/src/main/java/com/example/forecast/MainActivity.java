@@ -5,11 +5,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.forecast.adapter.DayAdapter;
 import com.example.forecast.model.Day;
+import com.example.forecast.model.Keys;
 
 import java.util.ArrayList;
 
@@ -19,12 +30,18 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager fourDayLayoutManager;
     private ArrayList<Day> days = new ArrayList<>();
 
+    private final String url = "http://api.openweathermap.org/data/2.5/weather";
+    private final String appid = "f0e85b0c89d7444ae43d1e802809975f";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        TextView cityCountry;
+
+        readyTodayWeather();
         //Test Commit
         //Push Carlo
         //Push Victor
@@ -88,6 +105,36 @@ public class MainActivity extends AppCompatActivity {
 
         startActivity(i);
     }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        readyTodayWeather();
+    }
+
+    private void readyTodayWeather() {
+        SharedPreferences sp = getSharedPreferences(Keys.KEY_SP.name(), MODE_PRIVATE);
+        String selectedCity = sp.getString(Keys.KEY_SELECTED_CITY.name(),null);
+
+        String temp = url + "?q=" + selectedCity + ",PH&appid=" + appid;
+        StringRequest sr = new StringRequest(Request.Method.POST, temp, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("City: ", selectedCity);
+                Log.d("response", response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.toString().trim(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        RequestQueue rq = Volley.newRequestQueue(getApplicationContext());
+        rq.add(sr);
+    }
+
+
 
     /**
      * OnClick listener function for city_name TextView. Once clicked, the app will go to the PickLocationActivity.
