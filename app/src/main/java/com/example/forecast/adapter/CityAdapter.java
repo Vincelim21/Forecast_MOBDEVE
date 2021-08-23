@@ -3,6 +3,8 @@ package com.example.forecast.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,10 +17,12 @@ import com.example.forecast.model.City;
 import com.example.forecast.model.CityList;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder> {
+public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder> implements Filterable {
     private static final int TYPE = 1;
     private ArrayList<CityList> cityList;
+    private ArrayList<CityList> cityListFull;
     private OnItemClickListener mlistener;
 
     public interface  OnItemClickListener {
@@ -68,6 +72,7 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
 
     public CityAdapter(ArrayList<CityList> cityList) {
         this.cityList = cityList;
+        cityListFull = new ArrayList<>(cityList);
     }
 
     @NonNull
@@ -92,4 +97,38 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
     @Override
     public int getItemCount() { return cityList.size(); }
 
+    @Override
+    public Filter getFilter() {
+        return cityFilter;
+    }
+
+    private Filter cityFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<CityList> filteredList = new ArrayList<>();
+
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(cityListFull);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+
+                for (CityList city : cityListFull) {
+                    if (city.getCityCountry().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(city);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return  results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults results) {
+            cityList.clear();
+            cityList.addAll((List)results.values);
+            notifyDataSetChanged();
+        }
+    };
 }
