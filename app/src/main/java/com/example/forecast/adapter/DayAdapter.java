@@ -74,7 +74,7 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder>{
         Day currentDay = dayList.get(position);
 
         holder.dayName.setText(currentDay.getDayName());
-        holder.conditionIcon.setImageResource(currentDay.getConditionIconId());
+        //holder.conditionIcon.setImageResource(currentDay.getConditionIconId());
         holder.aveTemp.setText(currentDay.getAveTemp() + "\u00B0");
         holder.maxTemp.setText(currentDay.getMaxTemp() + "\u00B0");
         holder.minTemp.setText(currentDay.getMinTemp() + "\u00B0");

@@ -7,16 +7,31 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.forecast.adapter.HourAdapter;
+import com.example.forecast.model.Day;
 import com.example.forecast.model.Hour;
+import com.example.forecast.model.Keys;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -25,6 +40,10 @@ public class DetailedWeatherActivity extends Activity {
     private RecyclerView.Adapter hourlyAdapter;
     private RecyclerView.LayoutManager hourlyLayoutManager;
     private ArrayList<Hour> hours = new ArrayList<>();
+    private final String url = "http://api.openweathermap.org/data/2.5/forecast";
+    private final String appid = "f0e85b0c89d7444ae43d1e802809975f";
+    private String extraDayName;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +67,7 @@ public class DetailedWeatherActivity extends Activity {
         //if one of the next days cards clicked, unpack passed data
         if (bundle != null){
             TextView dayName = findViewById(R.id.day_name);
-            String extraDayName = getIntent().getStringExtra("EXTRA_DAY_NAME");
+            this.extraDayName = getIntent().getStringExtra("EXTRA_DAY_NAME");
             dayName.setText(extraDayName);
 
             ConstraintLayout dayBG = findViewById(R.id.day_background);
@@ -70,14 +89,62 @@ public class DetailedWeatherActivity extends Activity {
     }
 
     public void loadHourData() {
-        hours.add(new Hour("09:00", R.drawable.overcast,"32"));
-        hours.add(new Hour("12:00", R.drawable.overcast,"32"));
-        hours.add(new Hour("15:00", R.drawable.overcast,"31"));
-        hours.add(new Hour("18:00", R.drawable.overcast,"28"));
-        hours.add(new Hour("21:00", R.drawable.overcast,"27"));
-        hours.add(new Hour("00:00", R.drawable.overcast,"27"));
-        hours.add(new Hour("03:00", R.drawable.overcast,"26"));
-        hours.add(new Hour("06:00", R.drawable.overcast,"27"));
+        SharedPreferences sp = getSharedPreferences(Keys.KEY_SP.name(), MODE_PRIVATE);
+        String selectedCity = sp.getString(Keys.KEY_SELECTED_CITY.name(),null);
+
+        String temp = url + "?q=" + selectedCity + ",PH&appid=" + appid;
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, temp,null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println("City: " + selectedCity);
+                        Log.d("response", response.toString());
+
+//                String output = "";
+                        try{
+                            JSONArray weather_list = response.getJSONArray("list");
+                            System.out.println(weather_list.length());
+
+                            int conditionIconId, ctr=0;
+                            String date, time, hour, condition;
+                            double max=0, min=0, aveTemp=0, aveHum=0, aveWind=0;
+                            double minTemp, maxTemp, hTemp, wind, humidity;
+                            String currentDate = "";
+                            String[] next;
+
+                            int i = 0;
+                            do {
+                                JSONObject forecast = (JSONObject) weather_list.get(i);
+
+                                hTemp = forecast.getJSONObject("main").getDouble("temp");
+                                condition = forecast.getJSONArray("weather").get(0).toString();
+                                String dt = forecast.getString("dt_txt");
+                                String[] dateTime = dt.split(" ");
+                                date = dateTime[0];
+                                time = dateTime[1];
+
+                                JSONObject nextO = (JSONObject) weather_list.get(i+1);
+                                next = nextO.getString("dt_txt").split(" ");
+
+                                hours.add(new Hour(time, condition, hTemp));
+
+                                System.out.println(condition);
+                                i++;
+                            } while (getExtraDayName().equals(next[0]) || i != 39);
+
+
+                        } catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.toString().trim(), Toast.LENGTH_SHORT).show();
+            }
+        });
+//        RequestQueue rq = Volley.newRequestQueue(getApplicationContext());
+//        rq.add(req);
     }
 
     public void setUpHourlyRecyclerView() {
@@ -114,6 +181,10 @@ public class DetailedWeatherActivity extends Activity {
         params.y = 0;
 
         getWindow().setAttributes(params);
+    }
+
+    public String getExtraDayName() {
+        return extraDayName;
     }
 }
 

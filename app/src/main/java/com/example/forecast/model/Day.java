@@ -4,14 +4,25 @@ import android.widget.Toast;
 
 public class Day {
     private int conditionIconId;
-    private String dayName, aveTemp, maxTemp, minTemp;
+    private double humidity, wind_speed, aveTemp, maxTemp, minTemp;
+    private String dayName, condition;
 
-    public Day(String dayName, int conditionIconId, String aveTemp, String maxTemp, String minTemp) {
+    public Day(String dayName, String condition, double aveTemp, double maxTemp, double minTemp, double humidity, double speed) {
+        this.condition = condition;
+        this.humidity = humidity;
+        this.wind_speed = speed;
         this.dayName = dayName;
-        this.conditionIconId = conditionIconId;
         this.aveTemp = aveTemp;
         this.maxTemp = maxTemp;
         this.minTemp = minTemp;
+    }
+
+    public double getHumidity() {
+        return humidity;
+    }
+
+    public double getWind_speed() {
+        return wind_speed;
     }
 
     public String getDayName() {
@@ -22,13 +33,13 @@ public class Day {
         return conditionIconId;
     }
 
-    public String getAveTemp() {
+    public double getAveTemp() {
         return aveTemp;
     }
 
-    public String getMaxTemp() { return maxTemp; }
+    public double getMaxTemp() { return maxTemp; }
 
-    public String getMinTemp() {
+    public double getMinTemp() {
         return minTemp;
     }
 
