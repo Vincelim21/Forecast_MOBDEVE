@@ -39,7 +39,7 @@ public class DetailedWeatherActivity extends Activity {
     private RecyclerView hourlyRecyclerView;
     private RecyclerView.Adapter hourlyAdapter;
     private RecyclerView.LayoutManager hourlyLayoutManager;
-    private ArrayList<Hour> hours = new ArrayList<>();
+    private static ArrayList<Hour> hours = new ArrayList<>();
     private final String url = "http://api.openweathermap.org/data/2.5/forecast";
     private final String appid = "f0e85b0c89d7444ae43d1e802809975f";
     private String extraDayName;
@@ -51,9 +51,6 @@ public class DetailedWeatherActivity extends Activity {
         setContentView(R.layout.detailed_layout);
 
         unpackPassedData();
-
-        //load hour data
-        loadHourData();
 
         //setup recyclerview
         setUpHourlyRecyclerView();
@@ -89,6 +86,7 @@ public class DetailedWeatherActivity extends Activity {
     }
 
     public void loadHourData() {
+        hours.clear();
         SharedPreferences sp = getSharedPreferences(Keys.KEY_SP.name(), MODE_PRIVATE);
         String selectedCity = sp.getString(Keys.KEY_SELECTED_CITY.name(),null);
 
@@ -117,7 +115,8 @@ public class DetailedWeatherActivity extends Activity {
                                 JSONObject forecast = (JSONObject) weather_list.get(i);
 
                                 hTemp = forecast.getJSONObject("main").getDouble("temp");
-                                condition = forecast.getJSONArray("weather").get(0).toString();
+                                JSONObject hi = (JSONObject) forecast.getJSONArray("weather").get(0);
+                                condition = hi.getString("description");
                                 String dt = forecast.getString("dt_txt");
                                 String[] dateTime = dt.split(" ");
                                 date = dateTime[0];
@@ -125,12 +124,14 @@ public class DetailedWeatherActivity extends Activity {
 
                                 JSONObject nextO = (JSONObject) weather_list.get(i+1);
                                 next = nextO.getString("dt_txt").split(" ");
-
-                                hours.add(new Hour(time, condition, hTemp));
+                                if (date.equals(getExtraDayName())) {
+                                    Hour newHour = new Hour(time, condition, hTemp);
+                                    hours.add(newHour);
+                                }
 
                                 System.out.println(condition);
                                 i++;
-                            } while (getExtraDayName().equals(next[0]) || i != 39);
+                            } while (i<39);
 
 
                         } catch (JSONException e){
@@ -143,11 +144,13 @@ public class DetailedWeatherActivity extends Activity {
                 Toast.makeText(getApplicationContext(), error.toString().trim(), Toast.LENGTH_SHORT).show();
             }
         });
-//        RequestQueue rq = Volley.newRequestQueue(getApplicationContext());
-//        rq.add(req);
+        RequestQueue rq = Volley.newRequestQueue(getApplicationContext());
+        rq.add(req);
+
     }
 
     public void setUpHourlyRecyclerView() {
+        System.out.println("Hours: "+hours.size());
         hourlyRecyclerView = findViewById(R.id.hour_container);
         hourlyRecyclerView.setHasFixedSize(true);
         hourlyLayoutManager = new LinearLayoutManager(DetailedWeatherActivity.this, LinearLayoutManager.HORIZONTAL, false);
@@ -155,6 +158,9 @@ public class DetailedWeatherActivity extends Activity {
 
         hourlyRecyclerView.setLayoutManager(hourlyLayoutManager);
         hourlyRecyclerView.setAdapter(hourlyAdapter);
+
+        //load hour data
+        loadHourData();
     }
 
     public void setUpWindowManager() {

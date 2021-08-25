@@ -136,6 +136,7 @@ public class PickLocationActivity extends AppCompatActivity {
     }
 
      public void setUpCityRecyclerView() {
+        System.out.println("City: "+cities.size());
 
          cityRecyclerView = findViewById(R.id.city_recyclerview);
          cityRecyclerView.setHasFixedSize(true);

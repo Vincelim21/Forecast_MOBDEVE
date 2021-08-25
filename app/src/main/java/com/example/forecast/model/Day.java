@@ -15,6 +15,7 @@ public class Day {
         this.aveTemp = aveTemp;
         this.maxTemp = maxTemp;
         this.minTemp = minTemp;
+        System.out.println("Constructor called");
     }
 
     public double getHumidity() {
