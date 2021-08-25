@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidStudioProjects/Forecast/app/src/main/res/drawable/preferred_background.xml" value="0.22135416666666666" />
+        <entry key="..\:/AndroidStudioProjects/Forecast/app/src/main/res/font/raleway.xml" value="0.396875" />
+        <entry key="..\:/AndroidStudioProjects/Forecast/app/src/main/res/font/raleway_bold.xml" value="0.396875" />
         <entry key="..\:/AndroidStudioProjects/Forecast/app/src/main/res/layout/activity_main.xml" value="0.34057971014492755" />
         <entry key="..\:/AndroidStudioProjects/Forecast/app/src/main/res/layout/activity_preferred_cities.xml" value="0.34057971014492755" />
         <entry key="..\:/AndroidStudioProjects/Forecast/app/src/main/res/layout/city_card.xml" value="0.34057971014492755" />
@@ -14,7 +17,6 @@
         <entry key="..\:/Y2T3/MOBDEVE/Forecast_MOBDEVE/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Y2T3/MOBDEVE/Forecast_MOBDEVE/app/src/main/res/layout/activity_preferred_cities.xml" value="0.30520833333333336" />
         <entry key="..\:/Y2T3/MOBDEVE/Forecast_MOBDEVE/app/src/main/res/layout/city_card.xml" value="0.17806484295845998" />
-        <entry key="..\:/Y2T3/MOBDEVE/Forecast_MOBDEVE/app/src/main/res/layout/day_card.xml" value="0.33" />
         <entry key="..\:/Y2T3/MOBDEVE/Forecast_MOBDEVE/app/src/main/res/layout/preferred_city_card.xml" value="0.30520833333333336" />
       </map>
     </option>

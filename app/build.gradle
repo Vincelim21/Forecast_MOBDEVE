@@ -46,7 +46,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
 
     //weather api
-    implementation 'com.android.volley:volley:1.1.1'
+    implementation 'com.android.volley:volley:1.2.0'
 
     //reading weather icons from openweather
     implementation 'com.squareup.picasso:picasso:2.71828'
