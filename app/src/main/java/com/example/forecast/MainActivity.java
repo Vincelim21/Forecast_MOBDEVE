@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ import com.example.forecast.adapter.DayAdapter;
 import com.example.forecast.model.Day;
 import com.example.forecast.model.Hour;
 import com.example.forecast.model.Keys;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private DecimalFormat df2 = new DecimalFormat("#.##");
 
     private TextView tv_temp, tv_hum, tv_wind, tv_cond, tv_city;
+    private ImageView iv_icon;
 
     private final String url = "http://api.openweathermap.org/data/2.5/forecast";
     private final String appid = "f0e85b0c89d7444ae43d1e802809975f";
@@ -80,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                             System.out.println(weather_list.length());
 
                             int conditionIconId, ctr=0;
-                            String date, time, dayName, hour, condition;
+                            String date, time, dayName, hour, condition, icon;
                             double max=0, min=0, aveTemp=0, aveHum=0, aveWind=0;
                             double minTemp, maxTemp, hTemp, wind, humidity;
                             String currentDate = "";
@@ -97,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
                                 wind = forecast.getJSONObject("wind").getDouble("speed");
                                 JSONObject hi = (JSONObject) forecast.getJSONArray("weather").get(0);
                                 condition = hi.getString("description");
+                                icon = hi.getString("icon");
                                 String dt = forecast.getString("dt_txt");
                                 String[] dateTime = dt.split(" ");
                                 date = dateTime[0];
@@ -239,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
                             System.out.println(weather_list.length());
 
                             int conditionIconId, ctr=0, day=1;
-                            String date, time, condition;
+                            String date, time, condition, icon;
                             double max=0, min=0, aveTemp=0, aveHum=0, aveWind=0;
                             double minTemp, maxTemp, hTemp, wind, humidity;
                             String currentDate = "";
@@ -257,6 +261,7 @@ public class MainActivity extends AppCompatActivity {
                                 wind = forecast.getJSONObject("wind").getDouble("speed");
                                 JSONObject hi = (JSONObject) forecast.getJSONArray("weather").get(0);
                                 condition = hi.getString("description");
+                                icon = hi.getString("icon");
                                 String dt = forecast.getString("dt_txt");
                                 String[] dateTime = dt.split(" ");
                                 date = dateTime[0];
@@ -287,6 +292,11 @@ public class MainActivity extends AppCompatActivity {
                                     tv_temp = findViewById(R.id.current_degree);
                                     tv_wind = findViewById(R.id.current_windspeed);
                                     tv_city = findViewById(R.id.preferred_name);
+                                    iv_icon = findViewById(R.id.current_condition_icon);
+
+
+                                    String iconUrl = "http://openweathermap.org/img/w/" + icon + ".png";
+                                    Picasso.get().load(iconUrl).into(iv_icon);
 
                                     tv_cond.setText(condition);
                                     tv_city.setText(selectedCity + ", Philippines");
