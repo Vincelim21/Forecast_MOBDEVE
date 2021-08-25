@@ -300,9 +300,9 @@ public class MainActivity extends AppCompatActivity {
 
                                     tv_cond.setText(condition);
                                     tv_city.setText(selectedCity + ", Philippines");
-                                    tv_hum.setText(df2.format(aveHum) + "%");
+                                    tv_hum.setText("Humidity " + df2.format(aveHum) + "%");
                                     tv_temp.setText(df2.format(aveTemp) + "°C");
-                                    tv_wind.setText(df2.format(aveWind) + " m/s");
+                                    tv_wind.setText("Wind " + df2.format(aveWind) + " m/s");
 
                                     day=999;
                                 }
