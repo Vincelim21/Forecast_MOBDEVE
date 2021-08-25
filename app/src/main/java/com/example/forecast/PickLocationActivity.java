@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -146,6 +147,9 @@ public class PickLocationActivity extends AppCompatActivity {
 
         Toast.makeText(this, "Now using "+ cityName + " as current city.",
                 Toast.LENGTH_LONG).show();
+
+        Intent intent = new Intent(PickLocationActivity.this, MainActivity.class);
+        startActivity(intent);
         //cityAdapter.notifyItemChanged(position);
     }
 
