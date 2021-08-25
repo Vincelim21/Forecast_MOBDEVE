@@ -40,31 +40,50 @@ public class PickLocationActivity extends AppCompatActivity {
     private CityAdapter cityAdapter;
     private RecyclerView.LayoutManager cityLayoutManager;
     private ArrayList<CityList> cities = new ArrayList<>();
-    private SearchView searchBar;
+    private EditText searchBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pick_location);
 
-        searchBar = findViewById(R.id.search_bar);
-
-        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                cityAdapter.getFilter().filter(newText);
-                return false;
-            }
-        });
-
         //setup city recyclerview
         setUpCityRecyclerView();
 
+        initSearchBar();
+    }
+
+    private void initSearchBar() {
+        searchBar = findViewById(R.id.search_bar);
+
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                filter(editable.toString());
+            }
+        });
+    }
+
+    private void filter(String text) {
+        ArrayList<CityList> filteredList = new ArrayList<>();
+
+        for (CityList city: cities) {
+            if (city.getCity().toLowerCase().startsWith(text.toLowerCase())) {
+                filteredList.add(city);
+            }
+        }
+
+        cityAdapter.filterList(filteredList);
     }
 
     public void loadCityData() {

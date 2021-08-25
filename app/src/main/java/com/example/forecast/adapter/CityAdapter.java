@@ -19,8 +19,8 @@ import com.example.forecast.model.CityList;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder> implements Filterable {
-    private static final int TYPE = 1;
+public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder>{
+    //private static final int TYPE = 1;
     private ArrayList<CityList> cityList;
     private ArrayList<CityList> cityListFull;
     private OnItemClickListener mlistener;
@@ -78,13 +78,13 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
     @NonNull
     @Override
     public CityViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        switch(viewType) {
-            case TYPE:
-            default:
+//        switch(viewType) {
+//            case TYPE:
+//            default:
                 View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.city_card, parent, false);
                 CityViewHolder cvh = new CityViewHolder(v, mlistener);
                 return cvh;
-        }
+        //}
     }
 
     @Override
@@ -97,6 +97,12 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
     @Override
     public int getItemCount() { return cityList.size(); }
 
+    public void filterList(ArrayList<CityList> filteredList) {
+        cityList = filteredList;
+        notifyDataSetChanged();
+    }
+
+    /*
     @Override
     public Filter getFilter() {
         return cityFilter;
@@ -130,5 +136,5 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
             cityList.addAll((List)results.values);
             notifyDataSetChanged();
         }
-    };
+    };*/
 }

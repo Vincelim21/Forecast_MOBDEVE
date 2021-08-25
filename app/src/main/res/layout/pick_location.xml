@@ -36,14 +36,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/pick_location_header" />
 
-        <androidx.appcompat.widget.SearchView
+        <EditText
             android:id="@+id/search_bar"
             android:layout_width="285dp"
             android:layout_height="50dp"
             android:layout_marginTop="36dp"
             android:background="@drawable/current_weather_container"
             android:iconifiedByDefault="false"
-            android:queryHint="Search"
+            android:hint="          Search"
             app:layout_constraintEnd_toStartOf="@id/use_current_location"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/instructions" />
