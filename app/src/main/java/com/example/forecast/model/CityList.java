@@ -11,6 +11,12 @@ public class CityList {
         this.preferred = false;
     }
 
+    public CityList(String city, String province, boolean preferred){
+        this.city = city;
+        this.cityCountry = city + ", " + province;
+        this.preferred = preferred;
+    }
+
     public String getCity() {
         return city;
     }
