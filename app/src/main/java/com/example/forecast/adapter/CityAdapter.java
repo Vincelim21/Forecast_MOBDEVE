@@ -22,7 +22,6 @@ import java.util.List;
 public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder>{
     //private static final int TYPE = 1;
     private ArrayList<CityList> cityList;
-    private ArrayList<CityList> cityListFull;
     private OnItemClickListener mlistener;
 
     public interface  OnItemClickListener {
@@ -73,7 +72,6 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
 
     public CityAdapter(ArrayList<CityList> cityList) {
         this.cityList = cityList;
-        cityListFull = new ArrayList<>(cityList);
     }
 
     @NonNull

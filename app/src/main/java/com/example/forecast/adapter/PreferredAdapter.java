@@ -12,11 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.forecast.R;
 import com.example.forecast.model.City;
+import com.example.forecast.model.CityList;
 
 import java.util.ArrayList;
 
 public class PreferredAdapter extends RecyclerView.Adapter<PreferredAdapter.PreferredViewHolder> {
-    private ArrayList<City> preferredList;
+    private ArrayList<CityList> preferredList;
     private OnPreferredClickListener mlistener;
 
     public interface OnPreferredClickListener {
@@ -29,18 +30,13 @@ public class PreferredAdapter extends RecyclerView.Adapter<PreferredAdapter.Pref
     }
 
     public static class PreferredViewHolder extends RecyclerView.ViewHolder{
-        public TextView cityName, curTemp, conditionDesc;
-        public ImageView conditionIcon;
+        public TextView cityName;
         public ImageButton preferredButton;
 
 
         public PreferredViewHolder(@NonNull View itemView, OnPreferredClickListener listener) {
             super(itemView);
             cityName = itemView.findViewById(R.id.preferred_name);
-            conditionIcon = itemView.findViewById(R.id.preferred_condition_icon);
-            curTemp = itemView.findViewById(R.id.preferred_degree);
-            conditionDesc = itemView.findViewById(R.id.preferred_weather_condition);
-
             preferredButton = itemView.findViewById(R.id.is_preferred);
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -69,7 +65,7 @@ public class PreferredAdapter extends RecyclerView.Adapter<PreferredAdapter.Pref
         }
     }
 
-    public PreferredAdapter(ArrayList<City> preferredList) {
+    public PreferredAdapter(ArrayList<CityList> preferredList) {
         this.preferredList = preferredList;
     }
 
@@ -83,12 +79,15 @@ public class PreferredAdapter extends RecyclerView.Adapter<PreferredAdapter.Pref
 
     @Override
     public void onBindViewHolder(@NonNull PreferredAdapter.PreferredViewHolder holder, int position) {
-        City currentPreferredCity = preferredList.get(position);
+        CityList currentPreferredCity = preferredList.get(position);
 
-        holder.cityName.setText(currentPreferredCity.getCityName());
-        holder.conditionIcon.setImageResource(currentPreferredCity.getConditionIconId());
-        holder.curTemp.setText(currentPreferredCity.getCurTemp() + "\u00B0");
-        holder.conditionDesc.setText(currentPreferredCity.getWeatherDesc());
+        holder.cityName.setText(currentPreferredCity.getCity());
+
+        if(currentPreferredCity.getPreferred()) {
+            holder.preferredButton.setImageResource(R.drawable.star_on);
+        }else {
+            holder.preferredButton.setImageResource(R.drawable.star_off);
+        }
 
     }
 
