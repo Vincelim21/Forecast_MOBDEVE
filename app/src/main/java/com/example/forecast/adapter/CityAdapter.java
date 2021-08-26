@@ -39,6 +39,7 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
         public ImageButton preferredButton;
 
 
+
         public CityViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             cityCountry = itemView.findViewById(R.id.city_name);
@@ -92,6 +93,13 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
         CityList currentCity = cityList.get(position);
 
         holder.cityCountry.setText(currentCity.getCityCountry());
+
+        if(currentCity.getPreferred()) {
+            holder.preferredButton.setImageResource(R.drawable.star_on);
+        }else {
+            holder.preferredButton.setImageResource(R.drawable.star_off);
+        }
+
     }
 
     @Override
@@ -102,39 +110,4 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
         notifyDataSetChanged();
     }
 
-    /*
-    @Override
-    public Filter getFilter() {
-        return cityFilter;
-    }
-
-    private Filter cityFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            List<CityList> filteredList = new ArrayList<>();
-
-            if (constraint == null || constraint.length() == 0) {
-                filteredList.addAll(cityListFull);
-            } else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
-
-                for (CityList city : cityListFull) {
-                    if (city.getCityCountry().toLowerCase().contains(filterPattern)) {
-                        filteredList.add(city);
-                    }
-                }
-            }
-            FilterResults results = new FilterResults();
-            results.values = filteredList;
-
-            return  results;
-        }
-
-        @Override
-        protected void publishResults(CharSequence charSequence, FilterResults results) {
-            cityList.clear();
-            cityList.addAll((List)results.values);
-            notifyDataSetChanged();
-        }
-    };*/
 }

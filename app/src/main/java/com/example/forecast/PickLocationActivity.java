@@ -150,12 +150,21 @@ public class PickLocationActivity extends AppCompatActivity {
 
         Intent intent = new Intent(PickLocationActivity.this, MainActivity.class);
         startActivity(intent);
-        //cityAdapter.notifyItemChanged(position);
     }
 
     public void preferCity(int position) {
-        cities.remove(position);
-        cityAdapter.notifyItemRemoved(position);
+        boolean isPreferred = cities.get(position).getPreferred();
+
+
+        if(isPreferred) {
+            cities.get(position).setPreferred(false);
+        } else {
+            cities.get(position).setPreferred(true);
+        }
+
+        cityAdapter.notifyItemChanged(position);
+        //cities.remove(position);
+        //cityAdapter.notifyItemRemoved(position);
     }
 
      public void setUpCityRecyclerView() {
@@ -164,7 +173,6 @@ public class PickLocationActivity extends AppCompatActivity {
          cityRecyclerView = findViewById(R.id.city_recyclerview);
          cityRecyclerView.setHasFixedSize(true);
          cityLayoutManager = new LinearLayoutManager(PickLocationActivity.this, LinearLayoutManager.VERTICAL, false);
-         //cityLayoutManager = new GridLayoutManager(this, NUM_COLS);
 
          cityAdapter = new CityAdapter(cities);
 
@@ -173,8 +181,6 @@ public class PickLocationActivity extends AppCompatActivity {
 
          //load cities data
          loadCityData();
-
-         //cityRecyclerView.addItemDecoration(new SpacesCityDecoration(15));
 
          cityAdapter.setOnItemCLickListener(new CityAdapter.OnItemClickListener() {
              @Override
