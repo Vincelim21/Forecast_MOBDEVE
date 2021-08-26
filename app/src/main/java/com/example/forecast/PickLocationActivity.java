@@ -1,28 +1,34 @@
 package com.example.forecast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.forecast.adapter.CityAdapter;
-import com.example.forecast.model.City;
 import com.example.forecast.model.CityList;
 import com.example.forecast.model.Keys;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,6 +40,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class PickLocationActivity extends AppCompatActivity {
 
@@ -42,17 +49,75 @@ public class PickLocationActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager cityLayoutManager;
     private ArrayList<CityList> cities = new ArrayList<>();
     private EditText searchBar;
+    private ImageButton ib_currentlocation;
+    FusedLocationProviderClient FLPC;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pick_location);
 
+        initUseLocation();
+
         //setup city recyclerview
         setUpCityRecyclerView();
 
         initSearchBar();
     }
+
+    private void initUseLocation(){
+        ib_currentlocation = findViewById(R.id.use_current_location);
+
+        this.FLPC = LocationServices.getFusedLocationProviderClient(this);
+
+        ib_currentlocation.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                //checks for permission
+                if (ActivityCompat.checkSelfPermission(PickLocationActivity.this,
+                        Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+                    FLPC.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Location> task) {
+                            //Initialize location
+                            Location location = task.getResult();
+                            if (location != null){
+                                try {
+                                    //initialize geocoder
+                                    Geocoder g = new Geocoder(PickLocationActivity.this,
+                                            Locale.getDefault());
+                                    //initialize address list
+                                    List<Address> add = g.getFromLocation(
+                                            location.getLatitude(), location.getLongitude(), 1
+                                    );
+
+                                    String currCity = add.get(0).getLocality();
+                                    //Stores current location in shared preferences
+                                    SharedPreferences sp = getSharedPreferences(Keys.KEY_SP.name(), MODE_PRIVATE);
+                                    SharedPreferences.Editor spEditor = sp.edit();
+
+                                    spEditor.putString(Keys.KEY_SELECTED_CITY.name(), add.get(0).getLocality().toString());
+                                    spEditor.apply();
+
+                                    setAsCurrentCity(currCity);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        }
+                    });
+                }
+                else{
+                    System.out.println("Null loc");
+                    ActivityCompat.requestPermissions(PickLocationActivity.this,
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},44);
+                }
+            }
+        });
+
+    }
+
 
     private void initSearchBar() {
         searchBar = findViewById(R.id.search_bar);
@@ -142,8 +207,7 @@ public class PickLocationActivity extends AppCompatActivity {
 //        cities.add(new City("Vancouver", R.drawable.rain, "19", "rainy"));
 
 
-    public void setAsCurrentCity(int position) {
-        String cityName = cities.get(position).getCity();
+    public void setAsCurrentCity(String cityName) {
 
         Toast.makeText(this, "Now using "+ cityName + " as current city.",
                 Toast.LENGTH_LONG).show();
@@ -187,7 +251,7 @@ public class PickLocationActivity extends AppCompatActivity {
              public void onItemClick(int position) {
 
                  saveCity(position);
-                 setAsCurrentCity(position);
+                 setAsCurrentCity(cities.get(position).getCity());
              }
 
              @Override
