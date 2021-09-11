@@ -52,6 +52,7 @@ public class PickLocationActivity extends AppCompatActivity {
     private EditText searchBar;
     private ImageButton ib_currentlocation;
     FusedLocationProviderClient FLPC;
+    private ArrayList<CityList> citiesFull = new ArrayList<>();
 
     private DBHelper db = new DBHelper(this);
 
@@ -146,18 +147,24 @@ public class PickLocationActivity extends AppCompatActivity {
     private void filter(String text) {
         ArrayList<CityList> filteredList = new ArrayList<>();
 
-        for (CityList city: cities) {
+
+        for (CityList city: citiesFull) {
             if (city.getCity().toLowerCase().startsWith(text.toLowerCase())) {
                 filteredList.add(city);
             }
         }
-
         cityAdapter.filterList(filteredList);
+        cities = new ArrayList<>(filteredList);
+        if (cities.size() == 0){
+            cities = citiesFull;
+        }
+        //setUpCityRecyclerView();
     }
 
     public void loadCityData() {
         try {
-
+            boolean preferred;
+            CityList City;
             String jsonDataString = readJSONDataFromFile();
             JSONArray jsonArray = new JSONArray(jsonDataString);
 
@@ -168,9 +175,21 @@ public class PickLocationActivity extends AppCompatActivity {
                 String name = itemObj.getString("name");
                 String province = itemObj.getString("province");
 
-                CityList City = new CityList(name, province);
+                ArrayList<String> temp = new ArrayList<>();
+                temp = db.getPrefCities();
+                if(db.getPrefCities() != null) {
+                    if (temp.indexOf(name) >= 0) {
+                        preferred = true;
+                    } else {
+                        preferred = false;
+                    }
+                    City = new CityList(name, province, preferred);
+                }else{
+                    City = new CityList(name, province, false);
+                }
                 cities.add(City);
             }
+            citiesFull = cities;
 
         } catch (JSONException | IOException e) {
             Log.d(null, "loadCityData: ", e);

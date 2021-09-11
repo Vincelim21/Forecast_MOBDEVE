@@ -18,8 +18,9 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     // Column names
-    public static final String CITY_TABLE = "table";
+    public static final String CITY_TABLE = "CityTable";
     public static final String CITY_NAME = "city";
+
 
     // Table information
     private static final String CREATE_POST_TABLE = "";
@@ -30,7 +31,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String create_query = "CREATE TABLE " + DATABASE_NAME + CITY_TABLE +
+        String create_query = "CREATE TABLE " + CITY_TABLE +
                 " ("+ CITY_NAME + " TEXT);";
 
         db.execSQL(create_query);
@@ -38,7 +39,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String upgrade_query = "DROP TABLE IF EXISTS " + DATABASE_NAME + CITY_TABLE +";";
+        String upgrade_query = "DROP TABLE IF EXISTS " + CITY_TABLE +";";
         db.execSQL(upgrade_query);
     }
 
@@ -51,7 +52,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         cv.put(CITY_NAME, city);
 
-        result = db.insert(DATABASE_NAME, null, cv);
+        result = db.insert(CITY_TABLE, null, cv);
         System.out.println(result);
         if (result != -1)
             return true;
@@ -62,10 +63,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public void deleteCity(String city) {
 
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
 
-        cv.put(CITY_NAME, city);
-        db.delete(DATABASE_NAME, "city = "+city, new String[]{city});
+        db.delete(CITY_TABLE, "city = ?", new String[]{city});
 
     }
 
@@ -87,9 +86,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
                 pCities.add(city);
             }
+            cursor.close();
             return pCities;
         }
-        return  null;
+        cursor.close();
+        return null;
     }
 
 }

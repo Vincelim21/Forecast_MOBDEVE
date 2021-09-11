@@ -1,19 +1,18 @@
 package com.example.forecast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.example.forecast.adapter.CityAdapter;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.forecast.adapter.PreferredAdapter;
 import com.example.forecast.data.DBHelper;
-import com.example.forecast.model.City;
 import com.example.forecast.model.CityList;
+import com.example.forecast.model.Keys;
 
 import java.util.ArrayList;
 
@@ -32,19 +31,19 @@ public class PreferredActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferred_cities);
 
+        setUpPreferredRecyclerView();
 
         loadPreferredCityData();
-
-        setUpPreferredRecyclerView();
     }
 
     public void loadPreferredCityData() {
-
-        System.out.print(db.addCity("Manila"));
-        System.out.print(db.addCity("Cebu"));
-        System.out.print(db.addCity("Baguio"));
-        System.out.print(db.addCity("Coron"));
-
+        if (db.getPrefCities() == null){
+            Toast.makeText(PreferredActivity.this, "Seems like you don't have any preferred cities!", Toast.LENGTH_SHORT).show();
+        }else {
+            for (int i = 0; i < db.getPrefCities().size(); i++) {
+                preferredCities.add(new CityList(db.getPrefCities().get(i), "PH", true));
+            }
+        }
 
 
         /*preferredCities.add(new CityList("Manila", "MM", true));
@@ -71,9 +70,10 @@ public class PreferredActivity extends AppCompatActivity {
 
         if(isPreferred) {
             preferredCities.get(position).setPreferred(false);
-            preferredAdapter.notifyItemChanged(position);
 
-            preferredCities.remove(position);
+            db.deleteCity(preferredCities.get(position).getCity());
+            preferredCities.remove(preferredCities.indexOf(preferredCities.get(position)));
+
             preferredAdapter.notifyItemRemoved(position);
         } else {
             preferredCities.get(position).setPreferred(true);
@@ -99,6 +99,7 @@ public class PreferredActivity extends AppCompatActivity {
         preferredAdapter.setOnPreferredCLickListener(new PreferredAdapter.OnPreferredClickListener() {
             @Override
             public void onPreferredCityClick(int position) {
+                saveCity(position);
                 setAsCurrentCity(position);
             }
 
@@ -107,5 +108,14 @@ public class PreferredActivity extends AppCompatActivity {
                 preferCity(position);
             }
         });
+    }
+
+    public void saveCity(int position){
+        SharedPreferences sp = getSharedPreferences(Keys.KEY_SP.name(), MODE_PRIVATE);
+        SharedPreferences.Editor spEditor = sp.edit();
+
+        spEditor.putString(Keys.KEY_SELECTED_CITY.name(), preferredCities.get(position).getCity());
+
+        spEditor.apply();
     }
 }
