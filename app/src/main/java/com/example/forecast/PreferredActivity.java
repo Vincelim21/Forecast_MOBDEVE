@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.forecast.adapter.CityAdapter;
 import com.example.forecast.adapter.PreferredAdapter;
+import com.example.forecast.data.DBHelper;
 import com.example.forecast.model.City;
 import com.example.forecast.model.CityList;
 
@@ -24,10 +25,13 @@ public class PreferredActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager preferredLayoutManager;
     private static int NUM_COLS = 2;
 
+    private DBHelper db = new DBHelper(this);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferred_cities);
+
 
         loadPreferredCityData();
 
@@ -35,13 +39,21 @@ public class PreferredActivity extends AppCompatActivity {
     }
 
     public void loadPreferredCityData() {
-        preferredCities.add(new CityList("Manila", "MM", true));
+
+        System.out.print(db.addCity("Manila"));
+        System.out.print(db.addCity("Cebu"));
+        System.out.print(db.addCity("Baguio"));
+        System.out.print(db.addCity("Coron"));
+
+
+
+        /*preferredCities.add(new CityList("Manila", "MM", true));
         preferredCities.add(new CityList("Cebu", "CEB", true));
         preferredCities.add(new CityList("Davao", "DAO", true));
         preferredCities.add(new CityList("Baguio", "BEN", true));
         preferredCities.add(new CityList("Tagaytay", "CAV", true));
         preferredCities.add(new CityList("Coron", "PLW", true));
-        preferredCities.add(new CityList("Mexico", "PAM", true));
+        preferredCities.add(new CityList("Mexico", "PAM", true));*/
     }
 
     public void setAsCurrentCity(int position) {

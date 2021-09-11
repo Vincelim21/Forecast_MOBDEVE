@@ -20,7 +20,7 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
     private ArrayList<CityList> cityList;
     private OnItemClickListener mlistener;
 
-    private DBHelper db;
+    //private DBHelper db;
 
     public interface OnItemClickListener {
         void onItemClick(int position);
@@ -55,10 +55,22 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
                     }
                 }
             });
+
+            preferredButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listener != null) {
+                        int position = getAbsoluteAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onPreferClick(position);
+                        }
+                    }
+                }
+            });
         }
-        public void setPrefBtnOnClickListener(View.OnClickListener onClickListener) {
+        /*public void setPrefBtnOnClickListener(View.OnClickListener onClickListener) {
             this.preferredButton.setOnClickListener(onClickListener);
-        }
+        }*/
     }
 
 
@@ -75,9 +87,9 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.city_card, parent, false);
         CityViewHolder cvh = new CityViewHolder(v, mlistener);
 
-        this.db = new DBHelper(parent.getContext());
+        //this.db = new DBHelper(parent.getContext());
 
-        cvh.setPrefBtnOnClickListener(new View.OnClickListener() {
+        /*cvh.setPrefBtnOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (cvh.listener != null) {
@@ -89,7 +101,7 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
                     db.addCity(cityList.get(cvh.getAbsoluteAdapterPosition()).getCity());
                 }
             }
-        });
+        });*/
         return cvh;
         //}
     }

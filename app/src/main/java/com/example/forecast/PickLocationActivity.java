@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.forecast.adapter.CityAdapter;
+import com.example.forecast.data.DBHelper;
 import com.example.forecast.model.CityList;
 import com.example.forecast.model.Keys;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -51,6 +52,8 @@ public class PickLocationActivity extends AppCompatActivity {
     private EditText searchBar;
     private ImageButton ib_currentlocation;
     FusedLocationProviderClient FLPC;
+
+    private DBHelper db = new DBHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -222,8 +225,12 @@ public class PickLocationActivity extends AppCompatActivity {
 
         if(isPreferred) {
             cities.get(position).setPreferred(false);
+            db.deleteCity(cities.get(position).getCity());
         } else {
             cities.get(position).setPreferred(true);
+            Toast.makeText(this, "Now preferring "+ cities.get(position).getCity() + " city.",
+                    Toast.LENGTH_LONG).show();
+            db.addCity(cities.get(position).getCity());
         }
 
         cityAdapter.notifyItemChanged(position);
