@@ -3,12 +3,13 @@ package com.example.forecast.model;
 public class Hour {
 
     private int conditionIconId;
-    private String condition;
+    private String condition, day;
     private String hour;
     private double aveTemp;
 
-    public Hour(String hour, String condition, double aveTemp) {
+    public Hour(String day, String hour, String condition, double aveTemp) {
         this.hour = hour;
+        this.day = day;
         this.condition = condition;
 //        this.conditionIconId = conditionIconId;
         this.aveTemp = aveTemp;
@@ -16,10 +17,14 @@ public class Hour {
 
     public Hour(){}
 
+    public String getDay() {
+        return day;
+    }
+
     public String getHour() { return hour; }
 
-    public int getConditionIconId() {
-        return conditionIconId;
+    public String getCondition() {
+        return condition;
     }
 
     public void setConditionIconId(int conditionIconId) {

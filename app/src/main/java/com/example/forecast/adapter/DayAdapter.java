@@ -3,7 +3,6 @@ package com.example.forecast.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.forecast.R;
 import com.example.forecast.model.Day;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -74,7 +74,8 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder>{
         Day currentDay = dayList.get(position);
 
         holder.dayName.setText(currentDay.getDayName());
-        //holder.conditionIcon.setImageResource(currentDay.getConditionIconId());
+        String iconUrl = "http://openweathermap.org/img/w/" + currentDay.getConditionIcon() + ".png";
+        Picasso.get().load(iconUrl).into(holder.conditionIcon);
         holder.aveTemp.setText(currentDay.getAveTemp() + "\u00B0");
         holder.maxTemp.setText(currentDay.getMaxTemp() + "\u00B0");
         holder.minTemp.setText(currentDay.getMinTemp() + "\u00B0");
@@ -95,6 +96,8 @@ public class DayAdapter extends RecyclerView.Adapter<DayAdapter.DayViewHolder>{
 
     @Override
     public int getItemCount() {
+        if(dayList == null)
+            return 0;
         return dayList.size();
     }
 }

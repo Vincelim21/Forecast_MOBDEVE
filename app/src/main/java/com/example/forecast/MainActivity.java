@@ -2,6 +2,7 @@ package com.example.forecast;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +22,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.forecast.adapter.DayAdapter;
+import com.example.forecast.data.DBHelper;
 import com.example.forecast.model.Day;
 import com.example.forecast.model.Hour;
 import com.example.forecast.model.Keys;
@@ -30,6 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -45,141 +49,176 @@ public class MainActivity extends AppCompatActivity {
     private final String url = "http://api.openweathermap.org/data/2.5/forecast";
     private final String appid = "f0e85b0c89d7444ae43d1e802809975f";
 
+    private DBHelper db = new DBHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        System.out.println("create");
 
         TextView cityCountry;
 
+        db.DeleteForecast();
+        //System.out.println("ON CREATE SIZE: " + db.getFourDayForecast().size());
         this.readyTodayWeather();
         //Test Commit
         //Push Carlo
         //Push Victor
-
         //setup day recyclerview
         this.setUpFourDayRecyclerView();
     }
     public void loadDaysData() {
-//        days.clear();
-//        SharedPreferences sp = getSharedPreferences(Keys.KEY_SP.name(), MODE_PRIVATE);
-//        String selectedCity = sp.getString(Keys.KEY_SELECTED_CITY.name(),null);
-//
-//        String temp = url + "?q=" + selectedCity + ",PH&appid=" + appid;
-//        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, temp,null,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        System.out.println("City: " + selectedCity);
-//                        Log.d("response", response.toString());
-//
-////                String output = "";
-//                        try{
-//                            JSONArray weather_list = response.getJSONArray("list");
-//                            System.out.println(weather_list.length());
-//
-//                            int conditionIconId, ctr=0;
-//                            String date, time, dayName, hour, condition, icon;
-//                            double max=0, min=0, aveTemp=0, aveHum=0, aveWind=0;
-//                            double minTemp, maxTemp, hTemp, wind, humidity;
-//                            String currentDate = "";
-//
-//                            int i = 0, day=1;
-//                            while (i < weather_list.length()){
-//
-//                                JSONObject forecast = (JSONObject) weather_list.get(i);
-//
-//                                hTemp = forecast.getJSONObject("main").getDouble("temp") - 273.15;
-//                                maxTemp = forecast.getJSONObject("main").getDouble("temp_max") - 273.15;
-//                                minTemp = forecast.getJSONObject("main").getDouble("temp_min") - 273.15;
-//                                humidity = forecast.getJSONObject("main").getDouble("humidity");
-//                                wind = forecast.getJSONObject("wind").getDouble("speed");
-//                                JSONObject hi = (JSONObject) forecast.getJSONArray("weather").get(0);
-//                                condition = hi.getString("description");
-//                                icon = hi.getString("icon");
-//                                String dt = forecast.getString("dt_txt");
-//                                String[] dateTime = dt.split(" ");
-//                                date = dateTime[0];
-//                                time = dateTime[1];
-//                                System.out.println(date);
-//                                if (i == 0){
-//                                    currentDate = date;
-//                                }
-//
-//                                if (currentDate.equals(date) && day!=1){
-//                                    aveTemp += hTemp;
-//                                    aveHum += humidity;
-//                                    aveWind += wind;
-//
-//                                    if (minTemp < min)
-//                                        min = minTemp;
-//                                    if (maxTemp > max)
-//                                        max = maxTemp;
-//                                    ctr++;
-//                                }
-//
-//                                if (!currentDate.equals(date)){
-//                                    if(day != 1) {
-//                                        aveTemp /= (ctr);
-//                                        aveHum /= ctr;
-//                                        aveWind /= ctr;
-//                                        Day newDay = new Day(currentDate, condition, Double.parseDouble(df2.format(aveTemp)),
-//                                                Double.parseDouble(df2.format(max)),  Double.parseDouble(df2.format(min)),
-//                                                Double.parseDouble(df2.format(aveHum)), Double.parseDouble(df2.format(aveWind)));
-//                                        days.add(newDay);
-//                                        System.out.println("Day added "+day);
-//
-//                                        currentDate = date;
-//                                        ctr = 0;
-//                                        aveTemp += hTemp;
-//                                        aveHum += humidity;
-//                                        aveWind += wind;
-//                                        if (minTemp < min)
-//                                            min = minTemp;
-//                                        if (maxTemp > max)
-//                                            max = maxTemp;
-//                                        ctr++;
-//                                    }
-//                                    day++;
-//                                }
-//                                i++;
-//                            }
-//                            System.out.println("Day size after loop: "+days.size());
-//
-//                        } catch (JSONException e){
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Toast.makeText(getApplicationContext(), error.toString().trim(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//        RequestQueue rq = Volley.newRequestQueue(getApplicationContext());
-//        rq.add(req);
-        days.add(new Day("Monday", "fair", 32, 34, 29, 56, 1.5));
-        days.add(new Day("Tuesday", "fair", 32, 34, 29, 56, 1.5));
-        days.add(new Day("Wednesday", "fair", 32, 34, 29, 56, 1.5));
-        days.add(new Day("Thursday", "fair", 32, 34, 29, 56, 1.5));
+        System.out.println("SHEEEEEEEEEESH");
+        SharedPreferences sp = getSharedPreferences(Keys.KEY_SP.name(), MODE_PRIVATE);
+        String selectedCity = sp.getString(Keys.KEY_SELECTED_CITY.name(),null);
+        System.out.println(selectedCity);
+
+        String temp = url + "?q=" + selectedCity + ",PH&appid=" + appid;
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, temp,null,
+                new Response.Listener<JSONObject>() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println("City: " + selectedCity);
+                        Log.d("response", response.toString());
+
+//                String output = "";
+                        try{
+                            System.out.println("EYYOo");
+                            JSONArray weather_list = response.getJSONArray("list");
+                            System.out.println(weather_list.length());
+
+                            int conditionIconId;
+                            String date, time, dayName, hour, condition, icon;
+                            double ctr = 0, max=0, min=0, aveTemp=0, aveHum=0, aveWind=0, minTemp, maxTemp, hTemp, wind, humidity;
+                            String currentDate = "", dayOfWeek;
+
+                            int i = 0, day=1;
+                            while (i < weather_list.length()){
+
+                                JSONObject forecast = (JSONObject) weather_list.get(i);
+
+                                hTemp = forecast.getJSONObject("main").getDouble("temp") - 273.15;
+                                maxTemp = forecast.getJSONObject("main").getDouble("temp_max") - 273.15;
+                                minTemp = forecast.getJSONObject("main").getDouble("temp_min") - 273.15;
+                                humidity = forecast.getJSONObject("main").getDouble("humidity");
+                                wind = forecast.getJSONObject("wind").getDouble("speed");
+                                JSONObject hi = (JSONObject) forecast.getJSONArray("weather").get(0);
+                                condition = hi.getString("description");
+                                icon = hi.getString("icon");
+                                String dt = forecast.getString("dt_txt");
+                                String[] dateTime = dt.split(" ");
+                                date = dateTime[0];
+                                time = dateTime[1];
+                                System.out.println(date);
+                                if (i == 0){
+                                    currentDate = date;
+                                }
+                                if (day != 1 && ctr ==1){
+                                    min = minTemp;
+                                    max = maxTemp;
+                                }
+
+                                if (currentDate.equals(date) && day!=1){
+                                    aveTemp += hTemp;
+                                    aveHum += humidity;
+                                    aveWind += wind;
+                                    System.out.println(aveTemp+ " " +aveHum +" "+ aveWind);
+
+                                    if (minTemp < min)
+                                        min = minTemp;
+                                    if (maxTemp > max)
+                                        max = maxTemp;
+                                    ctr++;
+                                }
+
+                                if (!currentDate.equals(date)){
+                                    if(day != 1) {
+                                        aveTemp /= (ctr);
+                                        aveHum /= ctr;
+                                        aveWind /= ctr;
+                                        dayOfWeek = LocalDate.parse(currentDate).getDayOfWeek().name();
+                                        Day newDay = new Day(dayOfWeek, condition, icon, Double.parseDouble(df2.format(aveTemp)),
+                                                Double.parseDouble(df2.format(max)),  Double.parseDouble(df2.format(min)),
+                                                Double.parseDouble(df2.format(aveHum)), Double.parseDouble(df2.format(aveWind)));
+                                        if(db.AddDayForecast(newDay)) {
+                                            System.out.println("Day added " + day + " with aveTemp = " + aveTemp + " with aveHum = " + aveHum + " with aveWind = " + aveWind);
+                                        }else{
+                                            System.out.println("ERROR");
+                                            break;
+                                        }
+
+                                        ctr = 0;
+                                        aveTemp = 0;
+                                        aveHum = 0;
+                                        aveWind = 0;
+                                        aveTemp += hTemp;
+                                        aveHum += humidity;
+                                        aveWind += wind;
+                                        if (minTemp < min)
+                                            min = minTemp;
+                                        if (maxTemp > max)
+                                            max = maxTemp;
+                                        ctr++;
+                                    }
+                                    day++;
+                                    currentDate = date;
+                                }
+                                i++;
+                            }
+
+                        } catch (JSONException e){
+                            e.printStackTrace();
+                            System.out.println("ERRRRRRRRRRRRRROR");
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.toString().trim(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        if(db.getFourDayForecast() != null) {
+            System.out.println("db size: " + db.getFourDayForecast().size());
+        }else{
+            System.out.println("null null null");
+        }
+        RequestQueue rq = Volley.newRequestQueue(getApplicationContext());
+        rq.add(req);
+
+
+
+//        days.add(new Day("Monday", "fair", 32, 34, 29, 56, 1.5));
+//        days.add(new Day("Tuesday", "fair", 32, 34, 29, 56, 1.5));
+//        days.add(new Day("Wednesday", "fair", 32, 34, 29, 56, 1.5));
+//        days.add(new Day("Thursday", "fair", 32, 34, 29, 56, 1.5));
 
     }
 
     public void setUpFourDayRecyclerView() {
-        System.out.println("Days: "+days.size());
+        if (this.days != null)
+            this.days.clear();
+        if(db.getFourDayForecast() != null) {
+            this.days.add(db.getFourDayForecast().get(db.getFourDayForecast().size() - 4));
+            this.days.add(db.getFourDayForecast().get(db.getFourDayForecast().size() - 3));
+            this.days.add(db.getFourDayForecast().get(db.getFourDayForecast().size() - 2));
+            this.days.add(db.getFourDayForecast().get(db.getFourDayForecast().size() - 1));
+        }
 
         fourDayRecyclerView = findViewById(R.id.four_day_forecast_container);
         fourDayRecyclerView.setHasFixedSize(true);
         fourDayLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false);
 
-        fourDayAdapter = new DayAdapter(days);
+        fourDayAdapter = new DayAdapter(this.days);
 
         fourDayRecyclerView.setLayoutManager(fourDayLayoutManager);
         fourDayRecyclerView.setAdapter(fourDayAdapter);
 
         //load days data
-        loadDaysData();
+        this.loadDaysData();
+
+        //System.out.println("Days: "+days.size());
 
         fourDayAdapter.setOnItemClickListener(new DayAdapter.OnItemClickListener() {
             @Override
@@ -194,12 +233,16 @@ public class MainActivity extends AppCompatActivity {
         String aveTemp = Double.toString(days.get(position).getAveTemp());
         String minTemp = Double.toString(days.get(position).getMinTemp());
         String maxTemp = Double.toString(days.get(position).getMaxTemp());
+        String condition = days.get(position).getCondition();
+        String icon = days.get(position).getConditionIcon();
 
         Intent i = new Intent(getBaseContext(), DetailedWeatherActivity.class);
         i.putExtra("EXTRA_DAY_NAME", dayName);
         i.putExtra("EXTRA_AVE_TEMP", aveTemp);
         i.putExtra("EXTRA_MIN_TEMP", minTemp);
         i.putExtra("EXTRA_MAX_TEMP", maxTemp);
+        i.putExtra("EXTRA_COND", condition);
+        i.putExtra("EXTRA_ICON", icon);
 
         switch (position) {
             case 0:
@@ -222,12 +265,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
-
+        System.out.println("resume");
         this.readyTodayWeather();
-//        this.setUpFourDayRecyclerView();
+        this.setUpFourDayRecyclerView();
     }
 
     public void readyTodayWeather() {
+
         SharedPreferences sp = getSharedPreferences(Keys.KEY_SP.name(), MODE_PRIVATE);
         String selectedCity = sp.getString(Keys.KEY_SELECTED_CITY.name(),null);
 
@@ -339,8 +383,98 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void detailedClick(View v){
-            Intent intent = new Intent(MainActivity.this, DetailedWeatherActivity.class);
-            startActivity(intent);
+
+        SharedPreferences sp = getSharedPreferences(Keys.KEY_SP.name(), MODE_PRIVATE);
+        String selectedCity = sp.getString(Keys.KEY_SELECTED_CITY.name(),null);
+
+        String temp = url + "?q=" + selectedCity + ",PH&appid=" + appid;
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, temp,null,
+                new Response.Listener<JSONObject>() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println("City: " + selectedCity);
+                        Log.d("response", response.toString());
+
+//                String output = "";
+                        try{
+                            JSONArray weather_list = response.getJSONArray("list");
+                            System.out.println(weather_list.length());
+
+                            int conditionIconId, ctr=0, day=1;
+                            String date, time, condition, icon;
+                            double max=0, min=0, aveTemp=0, aveHum=0, aveWind=0;
+                            double minTemp, maxTemp, hTemp, wind, humidity;
+                            String currentDate = "";
+
+                            ArrayList<Hour> hours = new ArrayList<>();
+                            ArrayList<Day> days = new ArrayList<>();
+                            int i = 0;
+                            while (i < weather_list.length() && day==1) {
+                                JSONObject forecast = (JSONObject) weather_list.get(i);
+
+                                hTemp = forecast.getJSONObject("main").getDouble("temp") - 273.15;
+                                maxTemp = forecast.getJSONObject("main").getDouble("temp_max") - 273.15;
+                                minTemp = forecast.getJSONObject("main").getDouble("temp_min") - 273.15;
+                                humidity = forecast.getJSONObject("main").getDouble("humidity");
+                                wind = forecast.getJSONObject("wind").getDouble("speed");
+                                JSONObject hi = (JSONObject) forecast.getJSONArray("weather").get(0);
+                                condition = hi.getString("description");
+                                icon = hi.getString("icon");
+                                String dt = forecast.getString("dt_txt");
+                                String[] dateTime = dt.split(" ");
+                                date = dateTime[0];
+                                time = dateTime[1];
+
+
+                                if (i == 0){
+                                    currentDate = date;
+                                }
+
+                                if (currentDate.equals(date)){
+                                    aveTemp += hTemp;
+                                    aveHum += humidity;
+                                    aveWind += wind;
+                                    if (minTemp < min)
+                                        min = minTemp;
+                                    if (maxTemp > max)
+                                        max = maxTemp;
+                                    ctr++;
+                                }
+                                else{
+                                    aveTemp/=ctr;
+                                    aveHum/=ctr;
+                                    aveWind/=ctr;
+
+                                    Intent intent = new Intent(MainActivity.this, DetailedWeatherActivity.class);
+                                    intent.putExtra("EXTRA_DAY_NAME", LocalDate.parse(currentDate).getDayOfWeek().name());
+                                    intent.putExtra("EXTRA_AVE_TEMP", String.valueOf(df2.format(aveTemp)));
+                                    intent.putExtra("EXTRA_MIN_TEMP", String.valueOf(df2.format(minTemp)));
+                                    intent.putExtra("EXTRA_MAX_TEMP", String.valueOf(df2.format(maxTemp)));
+                                    intent.putExtra("EXTRA_COND", condition);
+                                    intent.putExtra("EXTRA_ICON", icon);
+                                    intent.putExtra("EXTRA_DAY_BG", R.drawable.current_weather_container);
+
+                                    startActivity(intent);
+                                    day=999;
+                                }
+                                i++;
+                            }
+
+
+                        } catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.toString().trim(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        RequestQueue rq = Volley.newRequestQueue(getApplicationContext());
+        rq.add(req);
+
     }
 
     public void preferredClick (View v) {

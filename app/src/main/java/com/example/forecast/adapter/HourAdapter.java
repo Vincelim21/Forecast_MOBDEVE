@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.forecast.R;
 import com.example.forecast.model.Hour;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -42,13 +43,16 @@ public class HourAdapter extends RecyclerView.Adapter<HourAdapter.HourViewHolder
     @Override
     public void onBindViewHolder(@NonNull HourViewHolder holder, int position) {
         Hour currentHour = hourList.get(position);
-
         holder.hour.setText(currentHour.getHour());
-        holder.conditionIcon.setImageResource(currentHour.getConditionIconId());
+        String extraIcon = currentHour.getCondition();
+        String iconUrl = "http://openweathermap.org/img/w/" + extraIcon + ".png";
+        Picasso.get().load(iconUrl).into(holder.conditionIcon);
         holder.aveTemp.setText(currentHour.getAveTemp() + "\u00B0");
     }
 
     @Override
-    public int getItemCount() { return hourList.size(); }
+    public int getItemCount() {
+        return hourList.size();
+    }
 
 }
