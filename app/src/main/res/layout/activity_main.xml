@@ -22,6 +22,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/current_weather_header"/>
 
+    <TextView
+        android:id="@+id/tooltip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="click on top to change location"
+        android:textColorHint="#aa000000"
+        android:fontFamily="@font/raleway"
+        android:textSize="10sp"
+        app:layout_constraintTop_toBottomOf="@id/preferred_name"
+        app:layout_constraintBottom_toTopOf="@id/current_weather_header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <ImageView
         android:id="@+id/saved_cities"
         android:layout_width="wrap_content"
@@ -39,7 +52,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/raleway_medium"
         android:layout_marginTop="18dp"
-        android:paddingBottom="18dp"
+
         android:text="Current Weather"
         android:textColor="@color/cardview_dark_background"
         android:textSize="16sp"
