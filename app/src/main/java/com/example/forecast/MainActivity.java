@@ -416,6 +416,8 @@ public class MainActivity extends AppCompatActivity {
 
                                 if (i == 0){
                                     currentDate = date;
+                                    min = minTemp;
+                                    max = maxTemp;
                                 }
 
                                 if (currentDate.equals(date)){
@@ -436,8 +438,8 @@ public class MainActivity extends AppCompatActivity {
                                     Intent intent = new Intent(MainActivity.this, DetailedWeatherActivity.class);
                                     intent.putExtra("EXTRA_DAY_NAME", LocalDate.parse(currentDate).getDayOfWeek().name());
                                     intent.putExtra("EXTRA_AVE_TEMP", String.valueOf(df2.format(aveTemp)));
-                                    intent.putExtra("EXTRA_MIN_TEMP", String.valueOf(df2.format(minTemp)));
-                                    intent.putExtra("EXTRA_MAX_TEMP", String.valueOf(df2.format(maxTemp)));
+                                    intent.putExtra("EXTRA_MIN_TEMP", String.valueOf(df2.format(min)));
+                                    intent.putExtra("EXTRA_MAX_TEMP", String.valueOf(df2.format(max)));
                                     intent.putExtra("EXTRA_COND", condition);
                                     intent.putExtra("EXTRA_ICON", icon);
                                     intent.putExtra("EXTRA_DAY_BG", R.drawable.current_weather_container);
