@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:fontFamily="@font/raleway"
+            android:fontFamily="@font/raleway_bold"
             android:text="clear"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -73,25 +73,27 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/weather_condition" />
 
-        <ImageView
-            android:id="@+id/day_up_arrow"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+        <TextView
+            android:id="@+id/max"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/raleway_bold"
+            android:text="max"
             app:layout_constraintBottom_toBottomOf="@id/degree"
             app:layout_constraintEnd_toStartOf="@id/degree"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/weather_condition"
-            app:srcCompat="@drawable/ic_keyboard_arrow_up_24" />
+            app:layout_constraintTop_toTopOf="@id/degree" />
 
-        <ImageView
-            android:id="@+id/day_down_arrow"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+        <TextView
+            android:id="@+id/min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/raleway_bold"
+            android:text="min"
             app:layout_constraintBottom_toBottomOf="@id/degree"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/degree"
-            app:layout_constraintTop_toTopOf="@id/weather_condition"
-            app:srcCompat="@drawable/ic_keyboard_arrow_down_24" />
+            app:layout_constraintTop_toTopOf="@id/degree" />
 
         <TextView
             android:id="@+id/day_min_temp"
@@ -101,9 +103,9 @@
             android:fontFamily="@font/raleway"
             android:text="-3&#xb0;"
             android:textSize="18dp"
-            app:layout_constraintEnd_toEndOf="@id/day_down_arrow"
-            app:layout_constraintStart_toStartOf="@id/day_down_arrow"
-            app:layout_constraintTop_toBottomOf="@id/day_down_arrow" />
+            app:layout_constraintEnd_toEndOf="@id/min"
+            app:layout_constraintStart_toStartOf="@id/min"
+            app:layout_constraintTop_toBottomOf="@id/min" />
 
         <TextView
             android:id="@+id/day_max_temp"
@@ -113,9 +115,9 @@
             android:fontFamily="@font/raleway"
             android:text="7&#xb0;"
             android:textSize="18dp"
-            app:layout_constraintEnd_toEndOf="@id/day_up_arrow"
-            app:layout_constraintStart_toStartOf="@id/day_up_arrow"
-            app:layout_constraintTop_toBottomOf="@id/day_up_arrow" />
+            app:layout_constraintEnd_toEndOf="@id/max"
+            app:layout_constraintStart_toStartOf="@id/max"
+            app:layout_constraintTop_toBottomOf="@id/max" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/hour_container"

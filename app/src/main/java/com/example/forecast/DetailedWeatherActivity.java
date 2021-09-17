@@ -46,6 +46,9 @@ public class DetailedWeatherActivity extends Activity {
     private final String appid = "f0e85b0c89d7444ae43d1e802809975f";
     private String extraDayName;
 
+    private static ImageView upArrow;
+    private static ImageView downArrow;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,6 +203,7 @@ public class DetailedWeatherActivity extends Activity {
     }
 
     public void setUpWindowManager() {
+        //windowManager = (WindowManager) getApplicationContext().getSystemService(WINDOW_SERVICE);
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
 
