@@ -88,6 +88,16 @@ public class DBHelper extends SQLiteOpenHelper {
             return false;
     }
 
+    public  boolean DeleteHours(){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        long result = db.delete(HOUR_TABLE, null,null);
+        if (result != -1 )
+            return true;
+        else
+            return false;
+    }
+
     public boolean AddDayForecast(Day day) {
         long result;
 
@@ -105,8 +115,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
         result = db.insert(DAILY_TABLE, null, cv);
         System.out.println(result);
-        if (result != -1)
+        if (result != -1) {
             return true;
+        }
         else
             return false;
 
@@ -118,15 +129,12 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-
         cv.put(H_COND, hour.getCondition());
         cv.put(H_HOUR, hour.getHour());
         cv.put(H_TEMP, hour.getAveTemp());
         cv.put(D_DAY, hour.getDay());
 
-
         result = db.insert(HOUR_TABLE, null, cv);
-        System.out.println(result);
         if (result != -1)
             return true;
         else

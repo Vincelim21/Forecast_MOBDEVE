@@ -43,11 +43,14 @@ public class HourAdapter extends RecyclerView.Adapter<HourAdapter.HourViewHolder
     @Override
     public void onBindViewHolder(@NonNull HourViewHolder holder, int position) {
         Hour currentHour = hourList.get(position);
-        holder.hour.setText(currentHour.getHour());
-        String extraIcon = currentHour.getCondition();
+        System.out.println("DISPLAY HOUR: " +currentHour.getHour());
+        holder.hour.setText(currentHour.getCondition());
+
+        String extraIcon = currentHour.getHour();
         String iconUrl = "http://openweathermap.org/img/w/" + extraIcon + ".png";
         Picasso.get().load(iconUrl).into(holder.conditionIcon);
-        holder.aveTemp.setText(currentHour.getAveTemp() + "\u00B0");
+
+        holder.aveTemp.setText(Math.round(currentHour.getAveTemp()) + "\u00B0");
     }
 
     @Override

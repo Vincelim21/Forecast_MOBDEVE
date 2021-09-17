@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private DayAdapter fourDayAdapter;
     private RecyclerView.LayoutManager fourDayLayoutManager;
     private ArrayList<Day> days = new ArrayList<>();
-    private DecimalFormat df2 = new DecimalFormat("#.##");
+    private DecimalFormat df2 = new DecimalFormat("#.#");
 
     private TextView tv_temp, tv_hum, tv_wind, tv_cond, tv_city;
     private ImageView iv_icon;
@@ -55,21 +55,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        System.out.println("create");
 
         TextView cityCountry;
 
         db.DeleteForecast();
-        //System.out.println("ON CREATE SIZE: " + db.getFourDayForecast().size());
+
         this.readyTodayWeather();
-        //Test Commit
-        //Push Carlo
-        //Push Victor
-        //setup day recyclerview
-        this.setUpFourDayRecyclerView();
+
+        loadDaysData();
     }
     public void loadDaysData() {
-        System.out.println("SHEEEEEEEEEESH");
         SharedPreferences sp = getSharedPreferences(Keys.KEY_SP.name(), MODE_PRIVATE);
         String selectedCity = sp.getString(Keys.KEY_SELECTED_CITY.name(),null);
         System.out.println(selectedCity);
@@ -85,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
 
 //                String output = "";
                         try{
-                            System.out.println("EYYOo");
                             JSONArray weather_list = response.getJSONArray("list");
                             System.out.println(weather_list.length());
 
@@ -124,7 +118,6 @@ public class MainActivity extends AppCompatActivity {
                                     aveTemp += hTemp;
                                     aveHum += humidity;
                                     aveWind += wind;
-                                    System.out.println(aveTemp+ " " +aveHum +" "+ aveWind);
 
                                     if (minTemp < min)
                                         min = minTemp;
@@ -142,12 +135,7 @@ public class MainActivity extends AppCompatActivity {
                                         Day newDay = new Day(dayOfWeek, condition, icon, Double.parseDouble(df2.format(aveTemp)),
                                                 Double.parseDouble(df2.format(max)),  Double.parseDouble(df2.format(min)),
                                                 Double.parseDouble(df2.format(aveHum)), Double.parseDouble(df2.format(aveWind)));
-                                        if(db.AddDayForecast(newDay)) {
-                                            System.out.println("Day added " + day + " with aveTemp = " + aveTemp + " with aveHum = " + aveHum + " with aveWind = " + aveWind);
-                                        }else{
-                                            System.out.println("ERROR");
-                                            break;
-                                        }
+                                        db.AddDayForecast(newDay);
 
                                         ctr = 0;
                                         aveTemp = 0;
@@ -167,10 +155,10 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 i++;
                             }
+                            setUpFourDayRecyclerView();
 
                         } catch (JSONException e){
                             e.printStackTrace();
-                            System.out.println("ERRRRRRRRRRRRRROR");
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -179,11 +167,8 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), error.toString().trim(), Toast.LENGTH_SHORT).show();
             }
         });
-        if(db.getFourDayForecast() != null) {
-            System.out.println("db size: " + db.getFourDayForecast().size());
-        }else{
-            System.out.println("null null null");
-        }
+
+
         RequestQueue rq = Volley.newRequestQueue(getApplicationContext());
         rq.add(req);
 
@@ -216,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
         fourDayRecyclerView.setAdapter(fourDayAdapter);
 
         //load days data
-        this.loadDaysData();
+        //this.loadDaysData();
 
         //System.out.println("Days: "+days.size());
 
@@ -366,6 +351,8 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), error.toString().trim(), Toast.LENGTH_SHORT).show();
             }
         });
+
+        this.loadDaysData();
         RequestQueue rq = Volley.newRequestQueue(getApplicationContext());
         rq.add(req);
     }
