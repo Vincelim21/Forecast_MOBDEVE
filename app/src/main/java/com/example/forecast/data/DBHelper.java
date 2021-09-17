@@ -222,7 +222,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        String query = "DELETE FROM "+DAILY_TABLE;
+        String query = "DELETE FROM "+CITY_TABLE +" WHERE "+ CITY_NAME + " = '" + city + "';";
         db.execSQL(query);
     }
 
