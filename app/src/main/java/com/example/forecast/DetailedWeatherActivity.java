@@ -132,16 +132,21 @@ public class DetailedWeatherActivity extends Activity {
                                 JSONObject hi = (JSONObject) forecast.getJSONArray("weather").get(0);
                                 condition = hi.getString("icon");
                                 String dt = forecast.getString("dt_txt");
+//                                SimpleDateFormat simpleformat = new SimpleDateFormat();
+//                                simpleformat = new SimpleDateFormat("HH:mm");
+//                                String strHour = simpleformat.format(Date.valueOf(dt));
                                 String[] dateTime = dt.split(" ");
                                 date = dateTime[0];
                                 time = dateTime[1];
+
+                                String[] tSplit = time.split(":");
 
 //                                SimpleDateFormat formatTime = new SimpleDateFormat("hh.mm aa");
 //                                System.out.println("TIME: "+ formatTime.format(Date.valueOf(dt)));
 
                                 String day = LocalDate.parse(date).getDayOfWeek().name();
 
-                                Hour newHour = new Hour(day, time, condition, hTemp);
+                                Hour newHour = new Hour(day, tSplit[0]+":00", condition, hTemp);
                                 db.AddHoursForDay(newHour);
 
 
